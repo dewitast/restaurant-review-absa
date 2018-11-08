@@ -1,5 +1,17 @@
 from nltk.corpus import wordnet as wn
 
+def wordnet_pos_code(tag):
+    if tag.startswith('NN'):
+        return wn.NOUN
+    elif tag.startswith('VB'):
+        return wn.VERB
+    elif tag.startswith('JJ'):
+        return wn.ADJ
+    elif tag.startswith('RB'):
+        return wn.ADV
+    else:
+        return ''
+
 def nounify(word, pos):
     if pos == 'n':
         return word
@@ -38,6 +50,6 @@ for aspect in aspects:
     maks = 0
     for x in sa:
         for y in st:
-            if x.pos() == y.pos():
+            if x.pos() == y.pos() and x.pos() == 'n':
                 maks = max(maks, wu_palmer_similarity(x, y, False))
     print(aspect + ' ' + str(maks))
