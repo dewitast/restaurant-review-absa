@@ -182,4 +182,18 @@ class AspectExtractor:
 		tagger.open('crf_model/crf.model_main')
 		y_pred = [tagger.tag(xseq) for xseq in X]
 		prediction = np.array([labels[bio] for sentence in y_pred for bio in sentence])
-		return prediction
+		print(prediction)
+		review_token = nltk.word_tokenize(review)
+		idx=0
+		aspects = []
+		while idx<len(prediction):
+		    print("mauk")
+		    if prediction[idx]==0:
+		        aspect = review_token[idx]
+		        idx += 1
+		        while idx<len(prediction) and prediction[idx]==1:
+		            aspect+=" "+review_token[idx]
+		            idx+=1
+		        aspects.append(aspect)
+		    idx+=1
+		return prediction, aspects

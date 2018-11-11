@@ -1,9 +1,47 @@
 <html>
-   <body>
-      <form action = "http://localhost:5000/result" method = "post">
-         <p>Input your review sentence:</p>
-         <p><input type = "text" name = "review" /></p>
-         <p><input type = "submit" value = "submit" /></p>
-      </form>
+	<head>
+	  <title>Bootstrap Example</title>
+	  <meta charset="utf-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+	  <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+	  <script src="../static/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<div class="jumbotron text-center">
+		 	<h1>Aspect Based Sentiment Analysis</h1>
+		  	<p>Restaurant Domain</p> 
+		</div>
+		  
+		<div class="container">
+			<div class="row">
+				<div class="col-sm">
+	    		<form action = "http://localhost:5000/" method = "post">
+					<div class="form-group">
+						<label for="email">Input your review:</label>
+						<input type = "text" class="form-control" name = "review" />
+					</div>
+					<button type="submit" class="btn btn-default">Submit</button>
+				</form>
+				</div>
+	  		</div>
+	  		<div class="row">
+	    		<div class="col-sm">
+	    			<h3>Aspect Extraction</h3>
+      				<p>{{review}}</p>
+      				<h5>BIO notation</h5>
+      				<p>{{bio}}</p>
+      				<h5>Aspects</h5>
+      				<p>{{aspects}}</p>
+	    		</div>
+	    		<div class="col-sm">
+	    			<h3>Aspect Categorization</h3>
+      				<p>...</p>
+	    		</div>
+	    		<div class="col-sm">
+	    			<h3>Sentiment</h3>
+					<p>...</p>
+	    		</div>
+	  		</div>
+		</div>
    </body>
 </html>
