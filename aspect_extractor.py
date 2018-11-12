@@ -153,7 +153,7 @@ class AspectExtractor:
 		print("Rata-rata Recall untuk B")
 		print(recall/len(report))
 
-	def extract_aspect(self,review):
+	def extract_aspect(self,review,review_sentence):
 		data = [review]
 		X = [extract_features(doc) for doc in data]
 		labels = {"B": 0, "I": 1,"O":2}
@@ -163,7 +163,7 @@ class AspectExtractor:
 		y_pred = [tagger.tag(xseq) for xseq in X]
 		prediction = np.array([labels[bio] for sentence in y_pred for bio in sentence])
 		print(prediction)
-		review_token = nltk.word_tokenize(review)
+		review_token = nltk.word_tokenize(review_sentence)
 		idx=0
 		aspects = []
 		while idx<len(prediction):
