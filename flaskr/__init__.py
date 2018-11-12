@@ -15,7 +15,10 @@ def index():
 		bio, aspect_terms = aspect_extractor.extract_aspect(data, review)
 		bio = convert_bio(bio)
 		aspects = get_aspects(data, bio)
-		return render_template('index.html', review = review, bio=bio, aspect_terms = aspect_terms, aspects = aspects)
+		aspect_map = {}
+		for i in range(len(aspects)):
+			aspect_map[aspect_terms[i]] = aspects[i]
+		return render_template('index.html', review = review, bio=bio, aspect_terms = aspect_terms, aspects = aspect_map)
 	else:
 		return render_template('index.html')
 

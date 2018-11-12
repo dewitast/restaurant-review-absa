@@ -75,7 +75,7 @@ def get_aspects(data, bio):
     key_words = {
         "food": ["food", "drink", "menu", "deliciousness", "taste", "spiciness"],
         "price": ["price", "expensiveness", "cheapness", "money"],
-        "place": ["place", "table", "chair", "seating", "parking", "vibe", "music", "decoration", "ambience"],
+        "place": ["place", "table", "chair", "seating", "parking", "vibe", "music", "decoration", "ambience", "scenery", "view"],
         "service": ["service", "waiter", "waitress", "owner", "manager", "serving"]
     }
     aspect_list = []
@@ -92,9 +92,9 @@ def get_aspects(data, bio):
             while j < len(doc) and doc[i][2] == 'I':
                 j += 1
             j -= 1
-            k = min(len(doc)-1, j+2)
-            j = max(0, i-2)
-            for it in range(j, k+1):
+            right = min(len(doc)-1, j+2)
+            left = max(0, i-2)
+            for it in range(left, right+1):
                 word_now = doc[it]
                 best_aspect, maks = '', 0
                 for aspect in aspects:
@@ -108,7 +108,14 @@ def get_aspects(data, bio):
                         best_aspect = aspect
 
                 if maks >= 0.6:
-                    total[best_aspect] += maks / (abs(it-i) + 1)
+                    div = 0
+                    if it >= left and it <= right:
+                        div = 1
+                    elif it < left:
+                        div = left - it + 1
+                    elif it > right:
+                        div = it - right + 1
+                    total[best_aspect] += maks / div
 
             best_aspect, maks = '', 0
             for aspect in aspects:
