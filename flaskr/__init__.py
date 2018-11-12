@@ -4,7 +4,7 @@ from flask import Flask,redirect, url_for, request, render_template
 from aspect_extractor import *
 from aspect_classifier import get_aspects
 from preprocess import preprocess_sentence, convert_bio
-from feature_extraction import predictData
+from sentiment_classifier import predictData
 
 app = Flask(__name__)
 @app.route("/",methods = ['GET','POST'])
