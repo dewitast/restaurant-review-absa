@@ -68,37 +68,44 @@ def get_aspects(doc):
         "place": ["place", "table", "chair", "seating", "parking", "vibe", "music", "decoration", "ambience"],
         "service": ["service", "waiter", "waitress", "owner", "manager", "serving"]
     }
-    total = {
-        "food": 0,
-        "price": 0,
-        "place": 0,
-        "service": 0,
-    }
-    cnt = 0
-    for word in doc:
+    aspect_list = []
+    for i in range(len(doc)):
+        word = doc[i]
         if word[2] == 'B':
-            cnt += 1
-        if word[2] != 'O' or wordnet_pos_code(word[1]) == wn.ADJ:
+            total = {
+                "food": 0,
+                "price": 0,
+                "place": 0,
+                "service": 0,
+            }
+            j = i + 1
+            while j < len(doc) and doc[i][2] == 'I':
+                j += 1
+            j -= 1
+            k = min(len(doc)-1, j+2)
+            j = max(0, i-2)
+            for it in range(j, k+1):
+                word_now = doc[it]
+                best_aspect, maks = '', 0
+                for aspect in aspects:
+                    maks_tmp = 0
+                    for key in key_words[aspect]:
+                        tmp = wu_palmer_similarity(word_now[0], wordnet_pos_code(word_now[1]), key, wn.NOUN)
+                        if tmp > maks_tmp:
+                            maks_tmp = tmp
+                    if maks_tmp > maks:
+                        maks = maks_tmp
+                        best_aspect = aspects
+
+                if maks >= 0.5:
+                    total[best_aspect] += maks / (abs(it-i) + 1)
+
             best_aspect, maks = '', 0
             for aspect in aspects:
-                maks_tmp = 0
-                for key in key_words[aspect]:
-                    tmp = wu_palmer_similarity(word[0], wordnet_pos_code(word[1]), key, wn.NOUN)
-                    if tmp > maks_tmp:
-                        maks_tmp = tmp
-                print(word[0] + ' - ' + aspect + ' : ' + str(maks_tmp))
-                if maks_tmp > maks:
-                    maks = maks_tmp
+                if total[aspect] > maks:
+                    maks = total[aspect]
                     best_aspect = aspect
-                    
-            if maks >= 0.5:
-                total[best_aspect] = total[best_aspect] + 1
-                
-    if cnt == 0:
-        cnt = 1
-    if cnt > 4:
-        cnt = 4
-    
-    lst = [(c, a) for a, c in total.items()]
-    lst.sort()
-    return lst[4-cnt:]
+
+            aspect_list.append(best_aspect)
+
+    return aspect_list
