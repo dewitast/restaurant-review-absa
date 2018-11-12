@@ -1,6 +1,7 @@
 import pandas as pd
 import re
 import numpy as np
+import pickle
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.util import ngrams
@@ -49,18 +50,10 @@ def ngram_list(word_list, n):
     return ngram_res
 
 trigram_result = []
-# for i in range(len(filtered_reviews)):
-#     if (len(filtered_reviews[i]) > 2):
-#         trigram = ngram_list(filtered_reviews[i], 3)
-#         trigram_result.append(dict(Counter(trigram)))
 
 for i in range(len(filtered_reviews)):
     unigram = ngram_list(filtered_reviews[i], 1)
     trigram_result.append(dict(Counter(unigram)))
-#     bigram = {}
-#     if (len(filtered_reviews[i]) > 1):
-#         bigram = ngram_list(filtered_reviews[i], 2)
-#     trigram_result.append({**dict(Counter(unigram)), **dict(Counter(bigram))})
 
 trigram_set = set()
 for trigram in trigram_result:
@@ -80,14 +73,15 @@ price_df = pd.DataFrame(prices)
 place_df = pd.DataFrame(places)
 
 def predictData(datas, aspect):
+    trigram_load = pickle.load(open('trigram.pkl', 'rb'))
     if (aspect == "food"):
-        classifier = joblib.load('random_forest_food.pkl')
+        classifier = joblib.load('rf_food.pkl')
     if (aspect == "price"):
-      classifier = joblib.load('random_forest_price.pkl')
+      classifier = joblib.load('rf_price.pkl')
     if (aspect == "place"):
-      classifier = joblib.load('random_forest_place.pkl')
+      classifier = joblib.load('rf_place.pkl')
     if (aspect == "service"):
-      classifier = joblib.load('random_forest_service.pkl')
+      classifier = joblib.load('rf_service.pkl')
     
     tokenize_data = []
     filtered_data = []
@@ -103,14 +97,13 @@ def predictData(datas, aspect):
     for i in range(len(filtered_data)):
         data = ngram_list(filtered_data[i], 1)
         data_result.append(data)
-
-    print(data_result)
-
+        
     feature = []
-    for trigram in trigram_set:
+    for trigram in trigram_load:
         feature.append(data_result[0].count(trigram) if trigram in data_result[0] else 0)
                 
     output_data = pd.DataFrame(feature)
+    output_data.to_csv('output_flaskk.csv', index=False, header=False)
     
     result = classifier.predict(output_data.T)
     result_proba = classifier.predict_proba(output_data.T)
