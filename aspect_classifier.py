@@ -60,10 +60,20 @@ def wu_palmer_similarity(str1, pos1, str2, pos2):
                 
     return maks
 
-def get_aspects(doc):
+def convert(data, bio):
+    stop_words = set(stopwords.words('english')) 
+    data_preprocessed, bio_preprocessed = [], []
+    for i in range(len(data)):
+        if (data[i][0].lower() not in stop_words and data[i][0][0] not in string.punctuation) or bio[i] != 'O':
+            data_preprocessed.append((data[i][0], data[i][1], bio[i]))
+
+    return data_preprocessed
+
+def get_aspects(data, bio):
+    doc = convert(data, bio)
     aspects = ["food", "price", "service", "place"]
     key_words = {
-        "food": ["food", "drink", "menu", "deliciousness", "tastiness", "spiciness"],
+        "food": ["food", "drink", "menu", "deliciousness", "taste", "spiciness"],
         "price": ["price", "expensiveness", "cheapness", "money"],
         "place": ["place", "table", "chair", "seating", "parking", "vibe", "music", "decoration", "ambience"],
         "service": ["service", "waiter", "waitress", "owner", "manager", "serving"]
@@ -95,9 +105,9 @@ def get_aspects(doc):
                             maks_tmp = tmp
                     if maks_tmp > maks:
                         maks = maks_tmp
-                        best_aspect = aspects
+                        best_aspect = aspect
 
-                if maks >= 0.5:
+                if maks >= 0.6:
                     total[best_aspect] += maks / (abs(it-i) + 1)
 
             best_aspect, maks = '', 0

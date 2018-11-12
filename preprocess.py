@@ -24,3 +24,16 @@ def preprocess_sentence(data):
 	for token in tokens:
 		token = lemmatizer.lemmatize(token)
 	return pos_tag(tokens)
+
+def convert_bio(bio):
+	result = []
+	for b in bio:
+		c = ''
+		if b==2:
+			c = 'O'
+		elif b==0:
+			c = 'B'
+		else:
+			c = 'I'
+		result.append(c)
+	return result
