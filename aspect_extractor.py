@@ -6,24 +6,12 @@ from nltk.stem import WordNetLemmatizer
 import pycrfsuite
 from sklearn.metrics import classification_report
 import nltk
+from preprocess import preprocess_bio_data
 
 def get_BIO_data(filename):
 	with open(filename) as f:
 		labeled = json.load(f)
-	stop_words = set(stopwords.words('english')) 
-	data = []
-	lemmatizer = WordNetLemmatizer()
-	for sentence in labeled:
-		sen = []
-		for item in sentence:
-#             if item['token'] not in stop_words:
-			# if item['label']=='I':
-			#     tup = (lemmatizer.lemmatize(item['token']),item['pos'],'B')
-			# else:
-			tup = (lemmatizer.lemmatize(item['token']),item['pos'],item['label'])
-			sen.append(tup)
-		data.append(sen)
-	return data
+	return preprocess_bio_data(labeled)
 
 def word2features(doc, i):
 	word = doc[i][0]
@@ -166,15 +154,7 @@ class AspectExtractor:
 		print(recall/len(report))
 
 	def extract_aspect(self,review):
-		lemmatizer = WordNetLemmatizer()
-		docs =[review]
-		data = []
-		for doc in docs:
-		    tokens = nltk.word_tokenize(doc)
-		    for token in tokens:
-		        token = lemmatizer.lemmatize(token)
-		    pos = nltk.pos_tag(tokens)
-		    data.append(pos)
+		data = [review]
 		X = [extract_features(doc) for doc in data]
 		labels = {"B": 0, "I": 1,"O":2}
 		target_names = ['B', 'I','O']

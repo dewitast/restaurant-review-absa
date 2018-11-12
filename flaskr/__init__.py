@@ -2,12 +2,14 @@ import os
 
 from flask import Flask,redirect, url_for, request, render_template
 from aspect_extractor import *
+from preprocess import preprocess_sentence
 
 app = Flask(__name__)
 @app.route("/",methods = ['GET','POST'])
 def index():
 	if request.method == 'POST':
 		review = request.form['review']
+		review = preprocess_sentence(review)
 		aspect_extractor = AspectExtractor()
 		bio,aspects = aspect_extractor.extract_aspect(review)
 		return render_template('index.html', review = review, bio=bio, aspects = aspects)
