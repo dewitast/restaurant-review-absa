@@ -4,6 +4,7 @@ from flask import Flask,redirect, url_for, request, render_template
 from aspect_extractor import *
 from aspect_classifier import get_aspects
 from preprocess import preprocess_sentence, convert_bio
+from feature_extraction import predictData
 
 app = Flask(__name__)
 @app.route("/",methods = ['GET','POST'])
@@ -15,7 +16,11 @@ def index():
 		bio, aspect_terms = aspect_extractor.extract_aspect(data, review)
 		bio = convert_bio(bio)
 		aspects = get_aspects(data, bio)
-		return render_template('index.html', review = review, bio=bio, aspect_terms = aspect_terms, aspects = aspects)
+		sentiment_food = predictData([review], "food")
+		sentiment_price = predictData([review], "price")
+		sentiment_place = predictData([review], "place")
+		sentiment_service = predictData([review], "service")
+		return render_template('index.html', review = review, bio=bio, aspect_terms = aspect_terms, aspects = aspects, food = sentiment_food, price = sentiment_price, place = sentiment_place, service = sentiment_service)
 	else:
 		return render_template('index.html')
 
