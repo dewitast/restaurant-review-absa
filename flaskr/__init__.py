@@ -23,7 +23,7 @@ def index():
 		sentiment_price = predictData([review], "price")
 		sentiment_place = predictData([review], "place")
 		sentiment_service = predictData([review], "service")
-		return render_template('index.html', review = review, bio=bio, aspect_terms = aspect_terms, aspects = aspects_map, food = sentiment_food, price = sentiment_price, place = sentiment_place, service = sentiment_service)
+		return render_template('index.html', review = review, bio=bio, aspect_terms = aspect_terms, aspects = aspect_map, food = sentiment_food, price = sentiment_price, place = sentiment_place, service = sentiment_service)
 	else:
 		return render_template('index.html')
 
